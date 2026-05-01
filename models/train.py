@@ -2,21 +2,23 @@
 train.py — Train price forecasting models with time-series cross-validation.
 """
 
-import pandas as pd
-import numpy as np
-import joblib
-import os
+import sys
 from datetime import datetime
 from pathlib import Path
-from sklearn.model_selection import cross_val_score, TimeSeriesSplit
+
+import joblib
+import numpy as np
+import os
+import pandas as pd
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.linear_model import LinearRegression, Ridge
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-import sys
+from sklearn.model_selection import cross_val_score, TimeSeriesSplit
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+
 sys.path.append(str(Path(__file__).parent.parent))
-from src.utils import load_config
+from src.utils import load_config  # noqa: E402
 
 
 def prepare_features(df, config=None):
@@ -78,7 +80,7 @@ def train_and_compare(df, config=None, save_best=True):
         print(f"Training {name}...", end=" ")
         pipe = Pipeline([("scaler", StandardScaler()), ("model", model)])
         cv = cross_val_score(pipe, X_train, y_train, cv=tscv,
-                            scoring="neg_mean_absolute_error", n_jobs=-1)
+                             scoring="neg_mean_absolute_error", n_jobs=-1)
         pipe.fit(X_train, y_train)
         y_pred = pipe.predict(X_test)
         mae = mean_absolute_error(y_test, y_pred)

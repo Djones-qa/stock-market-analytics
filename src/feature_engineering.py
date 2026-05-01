@@ -52,8 +52,8 @@ def add_macd(df, price_col="close", fast=12, slow=26, signal=9):
     df["macd_line"] = (ema_fast - ema_slow).round(4)
     df["macd_signal"] = df["macd_line"].ewm(span=signal, adjust=False).mean().round(4)
     df["macd_histogram"] = (df["macd_line"] - df["macd_signal"]).round(4)
-    df["macd_bullish"] = ((df["macd_line"] > df["macd_signal"]) &
-                          (df["macd_line"].shift(1) <= df["macd_signal"].shift(1))).astype(int)
+    df["macd_bullish"] = ((df["macd_line"] > df["macd_signal"])
+                          & (df["macd_line"].shift(1) <= df["macd_signal"].shift(1))).astype(int)
     return df
 
 
@@ -66,8 +66,8 @@ def add_bollinger_bands(df, price_col="close", period=20, std_dev=2):
     df["bb_middle"] = sma.round(2)
     df["bb_lower"] = (sma - std_dev * std).round(2)
     df["bb_width"] = ((df["bb_upper"] - df["bb_lower"]) / df["bb_middle"]).round(4)
-    df["bb_position"] = ((df[price_col] - df["bb_lower"]) /
-                         (df["bb_upper"] - df["bb_lower"]).replace(0, np.nan)).round(4)
+    df["bb_position"] = ((df[price_col] - df["bb_lower"])
+                         / (df["bb_upper"] - df["bb_lower"]).replace(0, np.nan)).round(4)
     return df
 
 
@@ -76,8 +76,10 @@ def add_volatility(df, price_col="close"):
     df = df.copy()
     if "daily_return" not in df.columns:
         df["daily_return"] = df[price_col].pct_change()
-    df["volatility_20d"] = (df["daily_return"].rolling(20).std() * np.sqrt(252)).round(4)
-    df["volatility_60d"] = (df["daily_return"].rolling(60).std() * np.sqrt(252)).round(4)
+    df["volatility_20d"] = (df["daily_return"].rolling(20).std()
+                            * np.sqrt(252)).round(4)
+    df["volatility_60d"] = (df["daily_return"].rolling(60).std()
+                            * np.sqrt(252)).round(4)
     df["atr"] = _average_true_range(df).round(2)
     return df
 
@@ -102,8 +104,8 @@ def add_volume_features(df):
     df["volume_ratio"] = (df["volume"] / df["volume_sma_20"].replace(0, np.nan)).round(2)
     df["is_high_volume"] = (df["volume_ratio"] > 1.5).astype(int)
     if "close" in df.columns:
-        df["vwap_approx"] = ((df["close"] * df["volume"]).rolling(20).sum() /
-                             df["volume"].rolling(20).sum()).round(2)
+        df["vwap_approx"] = ((df["close"] * df["volume"]).rolling(20).sum()
+                             / df["volume"].rolling(20).sum()).round(2)
     return df
 
 

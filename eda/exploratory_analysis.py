@@ -2,12 +2,14 @@
 exploratory_analysis.py — Automated EDA for stock market data.
 """
 
-import pandas as pd
-import numpy as np
-from pathlib import Path
 import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
 sys.path.append(str(Path(__file__).parent.parent))
-from src.utils import format_currency, format_pct, sharpe_ratio, max_drawdown
+from src.utils import sharpe_ratio, max_drawdown  # noqa: E402
 
 
 def price_summary(df, price_col="close"):
@@ -57,8 +59,8 @@ def sector_breakdown(df):
 
 def correlation_matrix(df):
     numeric = df.select_dtypes(include=[np.number])
-    key_cols = [c for c in ["close","volume","daily_return","rsi","macd_line",
-                            "volatility_20d","bb_position"] if c in numeric.columns]
+    key_cols = [c for c in ["close", "volume", "daily_return", "rsi", "macd_line",
+                            "volatility_20d", "bb_position"] if c in numeric.columns]
     if key_cols:
         return numeric[key_cols].corr().round(3)
     return numeric.corr().round(3)
@@ -67,7 +69,7 @@ def correlation_matrix(df):
 def monthly_performance(df, price_col="close"):
     if "year" not in df.columns or "month" not in df.columns:
         return pd.DataFrame()
-    monthly = df.groupby(["year","month"])[price_col].agg(["first","last"])
+    monthly = df.groupby(["year", "month"])[price_col].agg(["first", "last"])
     monthly["return"] = ((monthly["last"] - monthly["first"]) / monthly["first"]).round(4)
     return monthly
 

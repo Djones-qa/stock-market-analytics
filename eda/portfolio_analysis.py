@@ -2,12 +2,14 @@
 portfolio_analysis.py — Portfolio performance, allocation, and risk metrics.
 """
 
-import pandas as pd
-import numpy as np
 import sys
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
 sys.path.append(str(Path(__file__).parent.parent))
-from src.utils import sharpe_ratio, sortino_ratio, max_drawdown, value_at_risk
+from src.utils import sharpe_ratio, sortino_ratio, max_drawdown, value_at_risk  # noqa: E402
 
 
 def portfolio_returns(df, weights=None, price_col="close"):
@@ -53,7 +55,7 @@ def sector_allocation_analysis(df, weights=None):
     """Performance breakdown by sector."""
     if "sector" not in df.columns or "ticker" not in df.columns:
         return pd.DataFrame()
-    ticker_sector = df[["ticker","sector"]].drop_duplicates()
+    ticker_sector = df[["ticker", "sector"]].drop_duplicates()
     tickers = df["ticker"].unique()
     if weights is None:
         weights = {t: 1.0 / len(tickers) for t in tickers}

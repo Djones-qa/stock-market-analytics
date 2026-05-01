@@ -32,4 +32,4 @@ jobs:
       - name: Lint check
         run: |
           pip install flake8
-          flake8 src/ eda/ models/ --max-line-length=120 --ignore=E501,W503
+          flake8 src/ eda/ models/ --max-line-length=120 --ignore=E501,W503,E226

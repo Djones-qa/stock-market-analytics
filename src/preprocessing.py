@@ -37,7 +37,7 @@ def validate_ohlc(df):
 def handle_missing_prices(df, method="ffill"):
     """Fill missing prices using forward fill then backward fill."""
     df = df.copy()
-    price_cols = [c for c in ["open","high","low","close","adj_close"] if c in df.columns]
+    price_cols = [c for c in ["open", "high", "low", "close", "adj_close"] if c in df.columns]
     for col in price_cols:
         missing_before = df[col].isna().sum()
         if method == "ffill":
